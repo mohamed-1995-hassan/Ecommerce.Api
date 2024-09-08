@@ -1,0 +1,32 @@
+[
+  {
+    "Name": "Sample Product 1",
+    "Description": "This is a sample product description for product 1.",
+    "Price": 19.99,
+    "PictureUrl": "http://example.com/product1.jpg"
+  },
+  {
+    "Name": "Sample Product 2",
+    "Description": "This is a sample product description for product 2.",
+    "Price": 29.99,
+    "PictureUrl": "http://example.com/product2.jpg"
+  },
+  {
+    "Name": "Sample Product 3",
+    "Description": "This is a sample product description for product 3.",
+    "Price": 39.99,
+    "PictureUrl": "http://example.com/product3.jpg"
+  },
+  {
+    "Name": "Sample Product 4",
+    "Description": "This is a sample product description for product 4.",
+    "Price": 49.99,
+    "PictureUrl": "http://example.com/product4.jpg"
+  },
+  {
+    "Name": "Sample Product 5",
+    "Description": "This is a sample product description for product 5.",
+    "Price": 59.99,
+    "PictureUrl": "http://example.com/product5.jpg"
+  }
+]
