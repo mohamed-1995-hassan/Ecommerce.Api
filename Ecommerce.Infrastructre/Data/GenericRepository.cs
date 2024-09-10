@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Infrastructre.Data
 {
-    class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity
     {
         private readonly StoreContext _context;
         public GenericRepository(StoreContext context)

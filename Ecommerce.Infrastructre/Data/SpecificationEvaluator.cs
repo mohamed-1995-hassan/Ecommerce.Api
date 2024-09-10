@@ -15,7 +15,22 @@ namespace Ecommerce.Infrastructre.Data
                 query = query.Where(spec.Criteria);
             }
 
-            query = spec.Includes.Aggregate(query, (current, include) => current.Include(include));
+			if (spec.IsPaginationEnabled)
+			{
+				query = query.Skip(spec.Skip).Take(spec.Take);
+			}
+
+			if (spec.OrderBy != null)
+            {
+                query = query.OrderBy(spec.OrderBy);
+            }
+
+			if (spec.OrderByDesceding != null)
+			{
+				query = query.OrderByDescending(spec.OrderByDesceding);
+			}
+
+			query = spec.Includes.Aggregate(query, (current, include) => current.Include(include));
 
             return query;
         }

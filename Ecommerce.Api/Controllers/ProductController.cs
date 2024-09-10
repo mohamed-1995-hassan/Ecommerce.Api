@@ -7,10 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductController : ControllerBase
-    {
+    public class ProductController : BaseController
+	{
         private readonly IGenericRepository<Product> _productRepository;
         private readonly IMapper _mapper;
         public ProductController(IGenericRepository<Product> productRepository, IMapper mapper)
@@ -34,9 +32,9 @@ namespace Ecommerce.Api.Controllers
             return Ok(productsToReturn);
         }
         [HttpGet]
-        public async Task<IActionResult> GetProducts()
+        public async Task<IActionResult> GetProducts(string sort, int? brandId, int? typeId)
         {
-            var spec = new ProductsWithTypesAndBrandsSpecification();
+            var spec = new ProductsWithTypesAndBrandsSpecification(sort, brandId, typeId);
             var products = await _productRepository.ListAsync(spec);
             var productsToReturn = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
             return Ok(productsToReturn);

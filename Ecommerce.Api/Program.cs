@@ -1,5 +1,9 @@
+using Ecommerce.Api.Errors;
+using Ecommerce.Api.Extentions;
+using Ecommerce.Api.Middlewares;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructre.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +22,15 @@ builder
        .AddDbContext<StoreContext>
        (opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddApplicationServices();
+
+
+
 var app = builder.Build();
+
+app.UseStatusCodePagesWithReExecute("/errors/{0}");
+app.UseMiddleware<ExceptionMiddleware>();
+
 
 using (var scope = app.Services.CreateScope())
 {
@@ -45,6 +57,7 @@ using (var scope = app.Services.CreateScope())
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+
 
 app.UseHttpsRedirection();
 
