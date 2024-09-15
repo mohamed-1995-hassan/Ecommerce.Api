@@ -10,18 +10,18 @@ namespace Ecommerce.Api.Controllers
     public class ProductController : BaseController
 	{
         private readonly IGenericRepository<Product> _productRepository;
+        private readonly IGenericRepository<ProductBrand> _brandRepository;
+        private readonly IGenericRepository<ProductType> _typeRepository;
         private readonly IMapper _mapper;
-        public ProductController(IGenericRepository<Product> productRepository, IMapper mapper)
+        public ProductController(IGenericRepository<Product> productRepository,
+                                 IGenericRepository<ProductBrand> brandRepository,
+								 IGenericRepository<ProductType> typeRepository,
+								 IMapper mapper)
         {
             _productRepository = productRepository;
-            _mapper = mapper;
-        }
-        [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
-        {
-            var products = await _productRepository.ListAllAsync();
-            var productsToReturn = _mapper.Map<IReadOnlyList<Product>,IReadOnlyList<ProductToReturnDto>>(products);
-            return Ok(productsToReturn);
+			_brandRepository = brandRepository;
+            _typeRepository = typeRepository;
+			_mapper = mapper;
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductByIdAsync(int id)
@@ -32,7 +32,7 @@ namespace Ecommerce.Api.Controllers
             return Ok(productsToReturn);
         }
         [HttpGet]
-        public async Task<IActionResult> GetProducts(string sort, int? brandId, int? typeId)
+        public async Task<IActionResult> GetProducts(string? sort, int? brandId, int? typeId)
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(sort, brandId, typeId);
             var products = await _productRepository.ListAsync(spec);
@@ -40,5 +40,19 @@ namespace Ecommerce.Api.Controllers
             return Ok(productsToReturn);
         }
 
-    }
+        [HttpGet("get-brands")]
+		public async Task<IActionResult> GetBrands()
+        {
+            var brands = await _brandRepository.ListAllAsync();
+            return Ok(brands);
+        }
+
+		[HttpGet("get-types")]
+		public async Task<IActionResult> GetTypes()
+		{
+			var types = await _typeRepository.ListAllAsync();
+			return Ok(types);
+		}
+
+	}
 }

@@ -1,9 +1,7 @@
-using Ecommerce.Api.Errors;
 using Ecommerce.Api.Extentions;
 using Ecommerce.Api.Middlewares;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructre.Data;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +13,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+{
+	builder.AllowAnyOrigin()
+		   .AllowAnyMethod()
+		   .AllowAnyHeader();
+}));
+
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 builder
@@ -23,13 +28,14 @@ builder
        (opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddApplicationServices();
-
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
 var app = builder.Build();
 
 app.UseStatusCodePagesWithReExecute("/errors/{0}");
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseStaticFiles();
 
 
 using (var scope = app.Services.CreateScope())
@@ -40,8 +46,6 @@ using (var scope = app.Services.CreateScope())
     {
         var context = scope.ServiceProvider.GetRequiredService<StoreContext>();
         await context.Database.MigrateAsync();
-        StoreContextSeed.SeedData(context, logger);
-        context.SaveChanges();
     }
     catch(Exception ex)
     {
@@ -51,14 +55,13 @@ using (var scope = app.Services.CreateScope())
     
 }
 
-    // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI();
-    }
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-
+app.UseCors("MyPolicy");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
