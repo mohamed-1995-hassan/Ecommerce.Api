@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Ecommerce.Api.Dtos;
+using Ecommerce.Api.Helpers;
 using Ecommerce.Core.Entities;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Core.Specifications;
@@ -32,12 +33,22 @@ namespace Ecommerce.Api.Controllers
             return Ok(productsToReturn);
         }
         [HttpGet]
-        public async Task<IActionResult> GetProducts(string? sort, int? brandId, int? typeId)
+        public async Task<IActionResult> GetProducts(string? sort,
+                                                     int? brandId,
+                                                     int? typeId,
+                                                     int pageIndex,
+                                                     int pageSize,
+                                                     string? search)
         {
-            var spec = new ProductsWithTypesAndBrandsSpecification(sort, brandId, typeId);
+            var spec = new ProductsWithTypesAndBrandsSpecification(sort, brandId, typeId, pageIndex, pageSize, search);
+            var countSpec = new ProductsWithFiltersForCountSpecification(sort, brandId, typeId, search);
+
             var products = await _productRepository.ListAsync(spec);
+            var count = await _productRepository.CountAsync(countSpec);
             var productsToReturn = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
-            return Ok(productsToReturn);
+
+            var response = new Pagination<ProductToReturnDto>(pageIndex, pageSize, count, productsToReturn);
+            return Ok(response);
         }
 
         [HttpGet("get-brands")]

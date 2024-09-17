@@ -5,9 +5,16 @@ namespace Ecommerce.Core.Specifications
 {
     public class ProductsWithTypesAndBrandsSpecification : BaseSpecification<Product>
     {
-        public ProductsWithTypesAndBrandsSpecification(string? sort, int? brandId, int? typeId)
-            :base(x => (!brandId.HasValue || x.ProductBrandId == brandId) &&
-					   (!typeId.HasValue || x.ProductTypeId == typeId))
+        public ProductsWithTypesAndBrandsSpecification(string? sort,
+													   int? brandId,
+													   int? typeId,
+													   int pageIndex,
+													   int pageSize,
+													   string search)
+            :base(x =>
+			(string.IsNullOrEmpty(search) || x.Name.ToLower().Contains(search)) &&
+			(!brandId.HasValue || x.ProductBrandId == brandId) &&
+			(!typeId.HasValue || x.ProductTypeId == typeId))
         {
             AddInclude(x => x.ProductType);
             AddInclude(x => x.ProductBrand);
@@ -31,6 +38,7 @@ namespace Ecommerce.Core.Specifications
 
 				}
 			}
+			ApplyPagination(pageSize, (pageIndex -1 ) * pageSize);
 		}
         public ProductsWithTypesAndBrandsSpecification(int id) : base(x => x.Id == id)
         {

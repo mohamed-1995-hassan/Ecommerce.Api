@@ -27,7 +27,12 @@ namespace Ecommerce.Infrastructre.Data
         {
             return await ApplySpecification(spec).ToListAsync();
         }
-        public async Task<TEntity> GetEntityWithSpec(ISpecification<TEntity> spec)
+		public async Task<int> CountAsync(ISpecification<TEntity> spec)
+		{
+			return await ApplySpecification(spec).CountAsync();
+		}
+
+		public async Task<TEntity> GetEntityWithSpec(ISpecification<TEntity> spec)
         {
             return await ApplySpecification(spec).FirstOrDefaultAsync();
         }
