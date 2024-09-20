@@ -4,7 +4,7 @@ import { ShopeComponent } from './shope.component';
 import { ProductItemComponent } from './product-item/product-item.component';
 import { SharedModule } from '../shared/shared.module';
 import { ProductDetailsComponent } from './product-details/product-details.component';
-import { RouterModule } from '@angular/router';
+import { ShopeRoutingModule } from './shope-routing.module';
 
 
 
@@ -13,8 +13,7 @@ import { RouterModule } from '@angular/router';
   imports: [
     CommonModule,
     SharedModule,
-    RouterModule
+    ShopeRoutingModule
   ],
-  exports:[ShopeComponent, ProductDetailsComponent]
 })
 export class ShopeModule { }

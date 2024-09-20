@@ -52,4 +52,7 @@ export class ShopeService {
   getTypes() : Observable<IBrand[]>{
     return this.httpClient.get<IBrand[]>(this.baseUrl + '/get-types');
   }
+  getProduct(id:number): Observable<IProduct>{
+    return this.httpClient.get<IProduct>(this.baseUrl + '/'+id)
+  }
 }
