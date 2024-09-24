@@ -3,6 +3,7 @@ using Ecommerce.Api.Middlewares;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructre.Data;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,12 @@ builder
 
 builder.Services.AddApplicationServices();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddScoped<IConnectionMultiplexer, ConnectionMultiplexer>(opt =>
+{
+	var configuration = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"), true);
+	return ConnectionMultiplexer.Connect(configuration);
+});
 
 
 var app = builder.Build();
