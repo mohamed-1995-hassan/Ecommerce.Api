@@ -10,6 +10,7 @@ import { NotFoundComponent } from './core/not-found/not-found.component';
 const routes: Routes = [
   {path:'',component:HomeComponent},
   {path:'shop',loadChildren:()=> import('./shope/shope.module').then(mod => mod.ShopeModule)},
+  {path:'basket',loadChildren:()=> import('./basket/basket.module').then(mod => mod.BasketModule)},
   {path:'test-error',component:TestErrorComponent},
   {path:'server-error',component:ServerErrorComponent},
   {path:'not-found',component:NotFoundComponent},
