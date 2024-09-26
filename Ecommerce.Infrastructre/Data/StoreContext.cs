@@ -1,10 +1,12 @@
 ﻿using Ecommerce.Core.Entities;
+using Ecommerce.Core.Entities.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace Ecommerce.Infrastructre.Data
 {
-    public class StoreContext : DbContext
+    public class StoreContext : IdentityDbContext<AppUser>
     {
         public StoreContext(DbContextOptions<StoreContext> options) : base(options){}
         public DbSet<Product> Product { get; set; }

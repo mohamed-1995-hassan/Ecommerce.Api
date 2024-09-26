@@ -1,6 +1,7 @@
 ﻿using Ecommerce.Api.Errors;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructre.Data;
+using Ecommerce.Infrastructre.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Api.Extentions
@@ -12,6 +13,7 @@ namespace Ecommerce.Api.Extentions
 			services.AddScoped<IProductRepository, ProductRepository>();
 			services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 			services.AddScoped<IBasketRepository, BasketRepository>();
+			services.AddScoped<ITokenService, TokenService>();
 			services.Configure<ApiBehaviorOptions>(opt =>
 			{
 				opt.InvalidModelStateResponseFactory = actionContext =>
