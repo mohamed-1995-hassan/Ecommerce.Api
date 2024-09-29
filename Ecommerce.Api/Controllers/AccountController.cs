@@ -5,9 +5,9 @@ using Ecommerce.Api.Errors;
 using Ecommerce.Api.Extentions;
 using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Ecommerce.Api.Controllers
 {
@@ -45,6 +45,17 @@ namespace Ecommerce.Api.Controllers
 		[HttpPost("register")]
 		public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
 		{
+			if(CheckEmailExistsAsync(registerDto.Email).Result.Value)
+			{
+				return new BadRequestObjectResult(new ApiValidationErrorResponse
+				{
+					Errors =
+					[
+						"Email Address in Use"
+					]
+				});
+			}
+
 			var user = new AppUser
 			{
 				DisplayName = registerDto.DisplayName,
@@ -69,10 +80,16 @@ namespace Ecommerce.Api.Controllers
 		}
 
 		[HttpGet("current-user")]
-		public async Task<ActionResult<AppUser>> GetCurrentUser()
+		[Authorize(AuthenticationSchemes = "Bearer")]
+		public async Task<ActionResult<UserDto>> GetCurrentUser()
 		{
 			var user = await _userManager.FindByEmailFromClaimsPrinciple(HttpContext.User);
-			return user;
+			return new UserDto
+			{
+				Email = user?.Email!,
+				DisplayName = user?.DisplayName!,
+				Token = _tokenService.CreateToken(user!)
+			};
 		}
 		[HttpGet("address")]
 		public async Task<ActionResult<AddressDto>> GetUserAddress()
