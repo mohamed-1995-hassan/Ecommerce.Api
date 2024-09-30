@@ -16,6 +16,6 @@ import { OrderTotalsComponent } from './components/order-totals/order-totals.com
     ReactiveFormsModule,
     FormsModule,
   ],
-  exports:[PagingHeaderComponent, PagerComponent, OrderTotalsComponent]
+  exports:[PagingHeaderComponent, PagerComponent, OrderTotalsComponent,ReactiveFormsModule]
 })
 export class SharedModule { }

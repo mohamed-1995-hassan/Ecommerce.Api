@@ -12,6 +12,7 @@ const routes: Routes = [
   {path:'shop',loadChildren:()=> import('./shope/shope.module').then(mod => mod.ShopeModule)},
   {path:'basket',loadChildren:()=> import('./basket/basket.module').then(mod => mod.BasketModule)},
   {path:'checkout',loadChildren:()=> import('./checkout/checkout.module').then(mod => mod.CheckoutModule)},
+  {path:'account',loadChildren:()=> import('./account/account.module').then(mod => mod.AccountModule)},
   {path:'test-error',component:TestErrorComponent},
   {path:'server-error',component:ServerErrorComponent},
   {path:'not-found',component:NotFoundComponent},
