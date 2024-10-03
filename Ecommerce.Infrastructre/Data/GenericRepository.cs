@@ -36,7 +36,22 @@ namespace Ecommerce.Infrastructre.Data
         {
             return await ApplySpecification(spec).FirstOrDefaultAsync();
         }
-        private IQueryable<TEntity> ApplySpecification(ISpecification<TEntity> spec)
+		public void Add(TEntity entity)
+		{
+			_context.Set<TEntity>().Add(entity);
+		}
+
+		public void Update(TEntity entity)
+		{
+			_context.Set<TEntity>().Attach(entity);
+			_context.Entry(entity).State = EntityState.Modified;
+		}
+
+		public void Delete(TEntity entity)
+		{
+			_context.Set<TEntity>().Remove(entity);
+		}
+		private IQueryable<TEntity> ApplySpecification(ISpecification<TEntity> spec)
         {
             return SpecificationEvaluator<TEntity>.GetQuery(_context.Set<TEntity>().AsQueryable(), spec);
         }
