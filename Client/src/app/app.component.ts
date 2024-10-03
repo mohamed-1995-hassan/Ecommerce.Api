@@ -33,13 +33,13 @@ export class AppComponent {
   loadCurrentUser(){
     const token = localStorage.getItem('token')
     console.log(token)
-    if(token){
-      this.accountService.loadCurrentUser(token).subscribe(()=>{
-        console.log('user')
-      },error=>{
-        console.log(error)
-      })
-    }
+
+    this.accountService.loadCurrentUser(token).subscribe(()=>{
+      console.log('user')
+    },error=>{
+      console.log(error)
+    })
+    
   }
   title = 'Client';
 }
