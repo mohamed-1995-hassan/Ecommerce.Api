@@ -92,6 +92,7 @@ namespace Ecommerce.Api.Controllers
 			};
 		}
 		[HttpGet("address")]
+		[Authorize(AuthenticationSchemes = "Bearer")]
 		public async Task<ActionResult<AddressDto>> GetUserAddress()
 		{
 			var user = await _userManager.FindByEmailWithAddressAsync(HttpContext.User);
@@ -99,6 +100,7 @@ namespace Ecommerce.Api.Controllers
 			return addressDto;
 		}
 		[HttpPut("address")]
+		[Authorize(AuthenticationSchemes = "Bearer")]
 		public async Task<ActionResult<AddressDto>> UpdateAddress(AddressDto address)
 		{
 			var user = await _userManager.FindByEmailWithAddressAsync(HttpContext.User);

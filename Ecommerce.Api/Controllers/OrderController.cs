@@ -53,7 +53,7 @@ namespace Ecommerce.Api.Controllers
 			return Ok(_mapper.Map<Order, OrderToReturnDto>(order));
 		}
 
-		[HttpGet]
+		[HttpGet("delivery-methods")]
 		public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
 		{
 			return Ok(await _orderService.GetDeliveryMethodsAsync());
