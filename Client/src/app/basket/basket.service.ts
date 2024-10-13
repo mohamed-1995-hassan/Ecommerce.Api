@@ -5,6 +5,7 @@ import { Basket, IBasket, IBasketItem, IBasketTotals } from '../shared/models/ba
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { IProduct } from '../shared/models/product';
+import { DeliveryMethod } from '../shared/models/deliveryMethod';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +17,14 @@ export class BasketService {
   basket$ = this.basketSource.asObservable();
   private basketTotalSource = new BehaviorSubject<IBasketTotals>(null)
   basketTotal$ = this.basketTotalSource.asObservable();
+  shipping = 0;
 
   constructor(private httpClient:HttpClient) { }
+
+  setShippingPrice(deliveryMethod:DeliveryMethod){
+    this.shipping = deliveryMethod.price;
+    this.calculateTotals();
+  }
 
   getBasket(id:string){
     return this.httpClient.get(this.baseUrl + 'basket?id='+id).pipe(
@@ -37,9 +44,11 @@ export class BasketService {
 
     const itemToAdd : IBasketItem = this.mapProductItemToBasketItem(item, quantity);
     let baseket = this.getCurrentBasketValue();
+    console.log(baseket)
     if(baseket === null){
       
       baseket = this.createBasket();
+      console.log(baseket)
     }
     baseket.items = this.addOrUpdateItem(baseket.items, itemToAdd, quantity)
     this.setBasket(baseket);
@@ -62,6 +71,7 @@ export class BasketService {
   }
 
   mapProductItemToBasketItem(item: IProduct, quantity: number): IBasketItem {
+    console.log(item,'74')
     return {
       id: item.id,
       productName: item.name,
@@ -105,18 +115,21 @@ export class BasketService {
   }
   deleteBasket(basket: IBasket) {
     return this.httpClient.delete(this.baseUrl + 'basket?id=' + basket.id).subscribe(()=>{
-      this.basketSource.next(null);
-      this.basketTotalSource.next(null)
-      localStorage.removeItem('basket_id')
+      this.deleteLocalBasket();
     })
+  }
+
+  deleteLocalBasket(){
+    this.basketSource.next(null);
+    this.basketTotalSource.next(null);
+    localStorage.removeItem('basket_id');
   }
 
   private calculateTotals(){
     const baseket = this.getCurrentBasketValue();
-    const shipping = 100;
     const subtotal = baseket.items.reduce((a,b)=>(b.price * b.quantity) + a, 0);
-    const total = subtotal + shipping;
-    this.basketTotalSource.next({shipping, total, subtotal});
+    const total = subtotal + this.shipping;
+    this.basketTotalSource.next({shipping:this.shipping, total, subtotal});
   }
 
   private addOrUpdateItem(items: IBasketItem[], itemToAdd: IBasketItem, quantity: number): IBasketItem[] {

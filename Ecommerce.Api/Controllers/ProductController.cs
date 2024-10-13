@@ -24,15 +24,17 @@ namespace Ecommerce.Api.Controllers
             _typeRepository = typeRepository;
 			_mapper = mapper;
         }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetProductByIdAsync(int id)
+		[Cached(600)]
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetProductByIdAsync(int id)
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(id);
             var product =  await _productRepository.GetEntityWithSpec(spec);
             var productsToReturn = _mapper.Map<Product, ProductToReturnDto>(product);
             return Ok(productsToReturn);
         }
-        [HttpGet]
+		[Cached(600)]
+		[HttpGet]
         public async Task<IActionResult> GetProducts(string? sort,
                                                      int? brandId,
                                                      int? typeId,
@@ -50,14 +52,14 @@ namespace Ecommerce.Api.Controllers
             var response = new Pagination<ProductToReturnDto>(pageIndex, pageSize, count, productsToReturn);
             return Ok(response);
         }
-
-        [HttpGet("get-brands")]
+		[Cached(600)]
+		[HttpGet("get-brands")]
 		public async Task<IActionResult> GetBrands()
         {
             var brands = await _brandRepository.ListAllAsync();
             return Ok(brands);
         }
-
+		[Cached(600)]
 		[HttpGet("get-types")]
 		public async Task<IActionResult> GetTypes()
 		{

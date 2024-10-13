@@ -10,12 +10,14 @@ namespace Ecommerce.Api.Extentions
 	{
 		public static IServiceCollection AddApplicationServices(this IServiceCollection services)
 		{
+			services.AddScoped<IResponseCacheService, ResponseCacheService>();
 			services.AddScoped<IProductRepository, ProductRepository>();
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
 			services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 			services.AddScoped<IBasketRepository, BasketRepository>();
 			services.AddScoped<ITokenService, TokenService>();
 			services.AddScoped<IOrederService, OrderService>();
+			
 			services.Configure<ApiBehaviorOptions>(opt =>
 			{
 				opt.InvalidModelStateResponseFactory = actionContext =>

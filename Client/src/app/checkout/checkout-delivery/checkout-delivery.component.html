@@ -2,6 +2,7 @@
     <div class="row" formGroupName="deliveryForm">
         <div class="col-6 form-group" *ngFor="let method of deliveryMethods">
             <input type="radio"
+                   (click)="setShippingPrice(method)"
                    class="form-check-input"
                    value="{{method.id}}"
                    id="{{method.id}}"

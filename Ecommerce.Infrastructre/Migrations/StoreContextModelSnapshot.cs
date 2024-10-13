@@ -160,7 +160,7 @@ namespace Ecommerce.Infrastructre.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DeliveryMethod");
+                    b.ToTable("DeliveryMethods");
 
                     b.HasData(
                         new
@@ -216,7 +216,6 @@ namespace Ecommerce.Infrastructre.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("PaymentIntentId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
@@ -230,7 +229,7 @@ namespace Ecommerce.Infrastructre.Migrations
 
                     b.HasIndex("DeliveryMethodId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Ecommerce.Core.Entities.OrderAggregate.OrderItem", b =>
@@ -254,7 +253,7 @@ namespace Ecommerce.Infrastructre.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItem");
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Ecommerce.Core.Entities.Product", b =>
@@ -750,7 +749,7 @@ namespace Ecommerce.Infrastructre.Migrations
 
                             b1.HasKey("OrderId");
 
-                            b1.ToTable("Order");
+                            b1.ToTable("Orders");
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderId");
@@ -787,7 +786,7 @@ namespace Ecommerce.Infrastructre.Migrations
 
                             b1.HasKey("OrderItemId");
 
-                            b1.ToTable("OrderItem");
+                            b1.ToTable("OrderItems");
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderItemId");

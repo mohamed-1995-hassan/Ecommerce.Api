@@ -18,9 +18,10 @@ import { RouterModule } from '@angular/router';
     PaginationModule.forRoot(),
     ReactiveFormsModule,
     FormsModule,
+    FormsModule,
     CdkStepperModule,
     RouterModule
   ],
-  exports:[PagingHeaderComponent, PagerComponent, OrderTotalsComponent,ReactiveFormsModule,CdkStepperModule,StepperComponent,BasketSummaryComponent]
+  exports:[PagingHeaderComponent, PagerComponent, OrderTotalsComponent,ReactiveFormsModule,CdkStepperModule,StepperComponent,BasketSummaryComponent,FormsModule]
 })
 export class SharedModule { }

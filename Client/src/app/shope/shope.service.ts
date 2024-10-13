@@ -1,10 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IProduct } from '../shared/models/product';
-import { Observable } from 'rxjs';
+import { Observable, of, pipe } from 'rxjs';
 import { IBrand } from '../shared/models/brand';
-import { IPagination } from '../shared/models/pagination';
+import { IPagination, Pagination } from '../shared/models/pagination';
 import { ShopParam } from '../shared/models/shopParams';
+import { map } from 'rxjs/operators';
+import { IType } from '../shared/models/productType';
 
 @Injectable({
   providedIn: 'root'
@@ -12,47 +14,99 @@ import { ShopParam } from '../shared/models/shopParams';
 export class ShopeService {
 
   baseUrl = 'https://localhost:7261/api/Product';
+  products:IProduct[] = [];
+  brands:IBrand[] = [];
+  types:IType[] = [];
+  pagination = new Pagination();
+  shopParams = new ShopParam();
   constructor(private httpClient: HttpClient) { }
 
-  getProducts(shopParam:ShopParam) : Observable<IPagination>{
+  getProducts(useCach:boolean) : Observable<IPagination>{
+    console.log(this.shopParams)
+
+    if(useCach === false){
+      this.products = [];
+    }
+
+    if(this.products.length > 0 && useCach == true){
+      const pagesReceived = Math.ceil(this.products.length / this.shopParams.pageSize)
+      if(this.shopParams.pageNumber <= pagesReceived){
+        this.pagination.data = this.products.slice((this.shopParams.pageNumber - 1) * this.shopParams.pageSize,
+      this.shopParams.pageNumber * this.shopParams.pageSize)
+
+      return of(this.pagination)
+      }
+    }
 
     let params = new HttpParams();
 
-    if(shopParam.brandIdSelected){
-      params = params.append('brandId',shopParam.brandIdSelected.toString());
+    if(this.shopParams.brandIdSelected){
+      params = params.append('brandId',this.shopParams.brandIdSelected.toString());
     }
 
-    if(shopParam.typeIdselected){
-      params = params.append('typeId',shopParam.typeIdselected.toString());
+    if(this.shopParams.typeIdselected){
+      params = params.append('typeId',this.shopParams.typeIdselected.toString());
     }
 
-    if(shopParam.pageNumber){
-      params = params.append('pageIndex',shopParam.pageNumber.toString())
+    if(this.shopParams.pageNumber){
+      params = params.append('pageIndex',this.shopParams.pageNumber.toString())
     }
 
-    if(shopParam.pageSize){
-      params = params.append('pageSize',shopParam.pageSize.toString())
+    if(this.shopParams.pageSize){
+      params = params.append('pageSize',this.shopParams.pageSize.toString())
     }
 
-    if(shopParam.search){
-      params = params.append('search',shopParam.search)
+    if(this.shopParams.search){
+      params = params.append('search',this.shopParams.search)
     }
 
-    if(shopParam.sortSelected){
-      params = params.append('sort',shopParam.sortSelected)
+    if(this.shopParams.sortSelected){
+      params = params.append('sort',this.shopParams.sortSelected)
     }
 
-    return this.httpClient.get<IPagination>(this.baseUrl,{params:params});
+    return this.httpClient.get<IPagination>(this.baseUrl,{observe:'response',params}).pipe(
+      map(response =>{
+        this.products = [...this.products, ...response.body.data];
+        this.pagination = response.body;
+        return this.pagination;
+      })
+    );
   }
 
   getBrands() : Observable<IBrand[]>{
-    return this.httpClient.get<IBrand[]>(this.baseUrl + '/get-brands');
+    if(this.brands.length > 0)
+      return of(this.brands);
+    return this.httpClient.get<IBrand[]>(this.baseUrl + '/get-brands').pipe(
+      map(reponse =>{
+        this.types = reponse;
+        return reponse
+      })
+    );
   }
 
-  getTypes() : Observable<IBrand[]>{
-    return this.httpClient.get<IBrand[]>(this.baseUrl + '/get-types');
+  setShopParams(params : ShopParam){
+    this.shopParams = params;
+  }
+
+  getShopParams(){
+    return this.shopParams;
+  }
+
+  getTypes() : Observable<IType[]>{
+    if(this.types.length > 0)
+      return of(this.types);
+    return this.httpClient.get<IType[]>(this.baseUrl + '/get-types').pipe(
+      map(reponse =>{
+        this.types = reponse;
+        return reponse
+      })
+    );
   }
   getProduct(id:number): Observable<IProduct>{
+    const product = this.products.find(p => p.id == id);
+    if(product)
+      return of(product);
+
     return this.httpClient.get<IProduct>(this.baseUrl + '/'+id)
   }
 }

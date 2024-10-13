@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { AccountService } from 'src/app/account/account.service';
 
 @Component({
   selector: 'app-checkout-address',
@@ -8,11 +9,15 @@ import { FormGroup } from '@angular/forms';
 })
 export class CheckoutAddressComponent implements OnInit {
   @Input() checkoutForm?:FormGroup;
-  constructor() { }
+  constructor(private accountService:AccountService) { }
 
   ngOnInit(): void {
   }
-  logForm(){
-    console.log(this.checkoutForm.get('addressForm')?.valid)
+  saveUSerAddress(){
+    this.accountService.updateUserAddress(this.checkoutForm.get('addressForm')?.value).subscribe({
+      next:()=>{
+        this.checkoutForm?.get('addressForm')?.reset(this.checkoutForm.get('addressForm')?.value);
+      }
+    })
   }
 }
